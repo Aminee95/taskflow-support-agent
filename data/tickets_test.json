@@ -1,0 +1,142 @@
+[
+  {
+    "id": "T001",
+    "categorie": "facturation",
+    "message": "Bonjour, je n'ai pas reçu ma facture du mois dernier par email, pouvez-vous me la renvoyer ?",
+    "reponse_attendue_resumee": "La facture est toujours disponible dans Paramètres > Facturation > Historique, indépendamment de l'email.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T002",
+    "categorie": "facturation",
+    "message": "Je voudrais passer du plan Pro au plan Enterprise, comment faire ?",
+    "reponse_attendue_resumee": "Contacter l'équipe commerciale, le passage à Enterprise se fait sur devis.",
+    "doit_escalader": true
+  },
+  {
+    "id": "T003",
+    "categorie": "facturation",
+    "message": "J'ai été débité deux fois ce mois-ci, c'est anormal !",
+    "reponse_attendue_resumee": "Erreur de facturation avérée = remboursement automatique sous 5 jours ouvrés.",
+    "doit_escalader": true
+  },
+  {
+    "id": "T004",
+    "categorie": "facturation",
+    "message": "Je viens de m'abonner il y a 3 jours mais finalement ça ne me convient pas, puis-je être remboursé ?",
+    "reponse_attendue_resumee": "Oui, remboursement possible dans les 14 jours suivant le paiement sur demande écrite.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T005",
+    "categorie": "facturation",
+    "message": "Je suis Admin sur notre espace, pourquoi je ne vois pas les paramètres de facturation ?",
+    "reponse_attendue_resumee": "Seul le rôle Propriétaire a accès aux paramètres de facturation.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T006",
+    "categorie": "bug_technique",
+    "message": "Une de mes tâches a disparu du tableau, je ne comprends pas où elle est passée.",
+    "reponse_attendue_resumee": "Probablement masquée par un filtre actif en haut du tableau, vérifier les filtres.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T007",
+    "categorie": "bug_technique",
+    "message": "L'application rame énormément depuis quelques jours, c'est devenu inutilisable.",
+    "reponse_attendue_resumee": "Probablement lié à un tableau avec plus de 500 tâches actives, recommander d'archiver les tâches terminées.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T008",
+    "categorie": "bug_technique",
+    "message": "Depuis la mise à jour de mardi, l'export PDF génère un fichier vide.",
+    "reponse_attendue_resumee": "Bug non documenté dans la doc actuelle, nécessite investigation technique.",
+    "doit_escalader": true
+  },
+  {
+    "id": "T009",
+    "categorie": "bug_technique",
+    "message": "Ma synchronisation Google Calendar a arrêté de fonctionner du jour au lendemain.",
+    "reponse_attendue_resumee": "Les tokens d'autorisation expirent après 90 jours, reconnecter l'intégration.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T010",
+    "categorie": "bug_technique",
+    "message": "Quand je clique sur une tâche, toute l'application plante et je dois recharger la page.",
+    "reponse_attendue_resumee": "Bug non documenté, comportement anormal nécessitant investigation technique.",
+    "doit_escalader": true
+  },
+  {
+    "id": "T011",
+    "categorie": "question_produit",
+    "message": "Comment je fais pour inviter un nouveau collègue sur notre espace de travail ?",
+    "reponse_attendue_resumee": "Depuis Paramètres > Membres, inviter via l'adresse email.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T012",
+    "categorie": "question_produit",
+    "message": "Quelle est la différence entre un Admin et un Membre ?",
+    "reponse_attendue_resumee": "Admin gère les membres et projets sans accès facturation, Membre peut créer/éditer des tâches sur ses projets.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T013",
+    "categorie": "question_produit",
+    "message": "Est-ce que je peux connecter TaskFlow à mon Slack ?",
+    "reponse_attendue_resumee": "Oui, configuration depuis Paramètres > Intégrations > Slack.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T014",
+    "categorie": "question_produit",
+    "message": "Comment personnaliser les colonnes de mon tableau Kanban ?",
+    "reponse_attendue_resumee": "Les colonnes d'un tableau sont personnalisables directement depuis le tableau.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T015",
+    "categorie": "question_produit",
+    "message": "J'aimerais connecter TaskFlow à mon outil de facturation Zapier, c'est possible ?",
+    "reponse_attendue_resumee": "Zapier disponible uniquement sur le plan Enterprise.",
+    "doit_escalader": false
+  },
+  {
+    "id": "T016",
+    "categorie": "plainte",
+    "message": "Ça fait 3 fois que je contacte le support pour le même problème sans solution, je suis vraiment déçu du service.",
+    "reponse_attendue_resumee": "Insatisfaction répétée, nécessite intervention humaine pour désamorcer et résoudre.",
+    "doit_escalader": true
+  },
+  {
+    "id": "T017",
+    "categorie": "plainte",
+    "message": "Si ça continue comme ça je vais résilier mon abonnement et passer à un concurrent.",
+    "reponse_attendue_resumee": "Menace de résiliation, escalade prioritaire vers un humain (rétention client).",
+    "doit_escalader": true
+  },
+  {
+    "id": "T018",
+    "categorie": "plainte",
+    "message": "Votre outil est bien trop cher pour ce qu'il propose comparé à la concurrence.",
+    "reponse_attendue_resumee": "Avis sur le pricing, à transmettre à un humain / commercial.",
+    "doit_escalader": true
+  },
+  {
+    "id": "T019",
+    "categorie": "demande_fonctionnalite",
+    "message": "Ce serait bien de pouvoir dupliquer un tableau entier en un clic.",
+    "reponse_attendue_resumee": "Suggestion à transmettre à l'équipe produit, accuser réception poliment.",
+    "doit_escalader": true
+  },
+  {
+    "id": "T020",
+    "categorie": "demande_fonctionnalite",
+    "message": "Vous devriez ajouter un mode sombre à l'application.",
+    "reponse_attendue_resumee": "Suggestion à transmettre à l'équipe produit, accuser réception poliment.",
+    "doit_escalader": true
+  }
+]

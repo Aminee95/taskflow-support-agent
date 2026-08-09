@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Environnement virtuel Python
+venv/
+
+# Base de données vectorielle (générée automatiquement, pas besoin de la versionner)
+chroma_db/
+
+# Fichiers Python temporaires
+__pycache__/
+*.pyc
+
+# Fichiers système
+.DS_Store
