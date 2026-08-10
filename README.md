@@ -24,21 +24,49 @@ Automatiser la lecture, la catégorisation et la réponse aux tickets clients, t
 
 ## Installation
 
+Cloner le dépôt et se placer dans le dossier du projet :
+
+\`\`\`bash
+git clone https://github.com/ton-utilisateur/taskflow-support-agent.git
+cd taskflow-support-agent
+\`\`\`
+
+Créer et activer un environnement virtuel Python :
+
 \`\`\`bash
 python -m venv venv
-venv\Scripts\activate       # Windows
+venv\Scripts\activate
+\`\`\`
+
+> Sous macOS/Linux : `source venv/bin/activate`
+
+Installer les dépendances :
+
+\`\`\`bash
 pip install -r requirements.txt
 \`\`\`
 
-Crée un fichier `.env` à partir de `.env.example` et renseigne ta clé API OpenAI.
+Configurer les variables d'environnement :
+
+\`\`\`bash
+cp .env.example .env
+\`\`\`
+
+Puis renseigner votre clé API OpenAI dans le fichier `.env`.
 
 ## Utilisation
 
+Construire la base de connaissances à partir de la documentation produit :
+
 \`\`\`bash
-python src/ingest.py        # construit la base de connaissance
-python src/test_search.py   # teste la recherche
+python src/ingest.py
 \`\`\`
 
+Tester la recherche sémantique sur la base de connaissances :
+
+\`\`\`bash
+python src/test_search.py
+\`\`\`
 ## État du projet
 
 🚧 En cours de développement — Semaine 1/4 : pipeline RAG de base fonctionnel.
