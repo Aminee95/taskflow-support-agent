@@ -37,8 +37,11 @@ cd taskflow-support-agent
 Créer et activer un environnement virtuel Python :
 
 \`\`\`bash
+
 python -m venv venv
+
 venv\Scripts\activate
+
 \`\`\`
 
 > Sous macOS/Linux : `source venv/bin/activate`
@@ -46,13 +49,17 @@ venv\Scripts\activate
 Installer les dépendances :
 
 \`\`\`bash
+
 pip install -r requirements.txt
+
 \`\`\`
 
 Configurer les variables d'environnement :
 
 \`\`\`bash
+
 cp .env.example .env
+
 \`\`\`
 
 Puis renseigner votre clé API OpenAI dans le fichier `.env`.
@@ -62,13 +69,17 @@ Puis renseigner votre clé API OpenAI dans le fichier `.env`.
 Construire la base de connaissances à partir de la documentation produit :
 
 \`\`\`bash
+
 python src/ingest.py
+
 \`\`\`
 
 Tester la recherche sémantique sur la base de connaissances :
 
 \`\`\`bash
+
 python src/test_search.py
+
 \`\`\`
 ## État du projet
 
