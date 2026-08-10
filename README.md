@@ -27,8 +27,11 @@ Automatiser la lecture, la catégorisation et la réponse aux tickets clients, t
 Cloner le dépôt et se placer dans le dossier du projet :
 
 \`\`\`bash
+
 git clone https://github.com/ton-utilisateur/taskflow-support-agent.git
+
 cd taskflow-support-agent
+
 \`\`\`
 
 Créer et activer un environnement virtuel Python :
