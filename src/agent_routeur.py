@@ -24,9 +24,22 @@ CATEGORIES = [
 
 # On demande une sortie strictement en JSON pour pouvoir l'utiliser
 # facilement dans le code ensuite (au lieu de devoir "parser" du texte libre).
+#
+# Version 2 du prompt (itération après évaluation v1 à 85%) :
+# - Précision ajoutée sur "facturation" pour inclure les changements de plan
+# - "urgence" et "necessite_escalade_directe" sont maintenant clairement
+#   DÉCOUPLÉS : un ticket peut être urgent ET avoir une réponse simple dans
+#   la doc (ex: "l'appli est trop lente" -> urgence haute mais pas d'escalade,
+#   car la doc a la solution).
 PROMPT_TEMPLATE = """Tu es un agent qui catégorise les tickets de support client pour TaskFlow.
 
 Catégories possibles : {categories}
+
+Précisions sur les catégories :
+- "facturation" couvre : les questions sur les plans/abonnements, les changements
+  de plan (upgrade/downgrade), les remboursements, les factures, les paiements.
+- "question_produit" couvre uniquement : comment utiliser une fonctionnalité
+  existante de l'outil (pas les plans ou la facturation).
 
 Analyse le ticket suivant et réponds UNIQUEMENT avec un objet JSON valide,
 sans aucun texte avant ou après, au format exact suivant :
@@ -37,9 +50,23 @@ sans aucun texte avant ou après, au format exact suivant :
   "justification": "une phrase courte expliquant ce choix"
 }}
 
-Règles pour "necessite_escalade_directe" :
-- true si c'est une plainte, une menace de résiliation, ou un problème visiblement complexe/sensible
-- false si c'est une question standard qui peut être répondue via la documentation
+IMPORTANT : "urgence" et "necessite_escalade_directe" sont deux choses
+DIFFÉRENTES. Un ticket peut être urgent tout en ayant une réponse simple
+dans la documentation (dans ce cas, urgence="haute" mais escalade=false).
+
+Règles pour "necessite_escalade_directe" (uniquement ces cas) :
+- true si c'est une plainte, une menace de résiliation, une demande de
+  changement vers le plan Enterprise (nécessite un commercial), ou un
+  problème dont la résolution nécessite clairement une action humaine
+  (ex: erreur de facturation à corriger manuellement)
+- false pour toute question standard, même urgente ou frustrée, dès lors
+  qu'une réponse factuelle peut raisonnablement exister dans une
+  documentation produit
+
+Règles pour "urgence" :
+- "haute" si le client exprime une forte frustration, un blocage total,
+  ou un impact financier
+- "moyenne" ou "basse" sinon
 
 Ticket client :
 {ticket}
