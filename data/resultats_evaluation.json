@@ -1,9 +1,9 @@
 {
   "metriques": {
     "total_tickets": 20,
-    "precision_categorisation": 85.0,
+    "precision_categorisation": 95.0,
     "precision_escalade": 85.0,
-    "taux_reponse_du_premier_coup": 85.0
+    "taux_reponse_du_premier_coup": 75.0
   },
   "details": [
     {
@@ -20,13 +20,13 @@
     {
       "id": "T002",
       "categorie_attendue": "facturation",
-      "categorie_trouvee": "question_produit",
-      "categorie_correcte": false,
+      "categorie_trouvee": "facturation",
+      "categorie_correcte": true,
       "doit_escalader_attendu": true,
-      "a_escalade": false,
-      "escalade_correcte": false,
-      "tentatives": 1,
-      "statut_final": "repondu"
+      "a_escalade": true,
+      "escalade_correcte": true,
+      "tentatives": 0,
+      "statut_final": "escalade"
     },
     {
       "id": "T003",
@@ -45,10 +45,10 @@
       "categorie_trouvee": "facturation",
       "categorie_correcte": true,
       "doit_escalader_attendu": false,
-      "a_escalade": false,
-      "escalade_correcte": true,
-      "tentatives": 1,
-      "statut_final": "repondu"
+      "a_escalade": true,
+      "escalade_correcte": false,
+      "tentatives": 0,
+      "statut_final": "escalade"
     },
     {
       "id": "T005",
@@ -78,10 +78,10 @@
       "categorie_trouvee": "bug_technique",
       "categorie_correcte": true,
       "doit_escalader_attendu": false,
-      "a_escalade": true,
-      "escalade_correcte": false,
-      "tentatives": 0,
-      "statut_final": "escalade"
+      "a_escalade": false,
+      "escalade_correcte": true,
+      "tentatives": 1,
+      "statut_final": "repondu"
     },
     {
       "id": "T008",
@@ -91,7 +91,7 @@
       "doit_escalader_attendu": true,
       "a_escalade": true,
       "escalade_correcte": true,
-      "tentatives": 0,
+      "tentatives": 2,
       "statut_final": "escalade"
     },
     {
@@ -111,10 +111,10 @@
       "categorie_trouvee": "bug_technique",
       "categorie_correcte": true,
       "doit_escalader_attendu": true,
-      "a_escalade": true,
-      "escalade_correcte": true,
-      "tentatives": 0,
-      "statut_final": "escalade"
+      "a_escalade": false,
+      "escalade_correcte": false,
+      "tentatives": 1,
+      "statut_final": "repondu"
     },
     {
       "id": "T011",
@@ -163,8 +163,8 @@
     {
       "id": "T015",
       "categorie_attendue": "question_produit",
-      "categorie_trouvee": "demande_fonctionnalite",
-      "categorie_correcte": false,
+      "categorie_trouvee": "question_produit",
+      "categorie_correcte": true,
       "doit_escalader_attendu": false,
       "a_escalade": true,
       "escalade_correcte": false,
@@ -201,7 +201,7 @@
       "doit_escalader_attendu": true,
       "a_escalade": true,
       "escalade_correcte": true,
-      "tentatives": 0,
+      "tentatives": 2,
       "statut_final": "escalade"
     },
     {
