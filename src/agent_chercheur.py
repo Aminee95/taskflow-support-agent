@@ -26,6 +26,11 @@ Si le contexte ne contient pas assez d'information pour répondre avec certitude
 réponds exactement : "INSUFFISANT" (rien d'autre).
 
 Ne jamais inventer d'information qui n'est pas dans le contexte.
+Ne jamais extrapoler un lien de cause à effet qui n'est pas explicitement
+écrit dans le contexte -- par exemple, si le client rapporte un symptôme
+précis (ex: un plantage) et que le contexte ne parle que d'un symptôme
+différent (ex: une lenteur), ne présume pas que la même solution s'applique
+aux deux. Dans ce cas, réponds "INSUFFISANT".
 
 Contexte :
 {contexte}
@@ -36,7 +41,7 @@ Question du client :
 Réponse (claire, professionnelle, en français) :"""
 
 
-def rechercher_contexte(question, k=3):
+def rechercher_contexte(question, k=5):
     """Récupère les k passages de documentation les plus pertinents."""
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     vectorstore = Chroma(persist_directory=CHROMA_DIR, embedding_function=embeddings)

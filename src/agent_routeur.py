@@ -54,14 +54,17 @@ IMPORTANT : "urgence" et "necessite_escalade_directe" sont deux choses
 DIFFÉRENTES. Un ticket peut être urgent tout en ayant une réponse simple
 dans la documentation (dans ce cas, urgence="haute" mais escalade=false).
 
-Règles pour "necessite_escalade_directe" (uniquement ces cas) :
-- true si c'est une plainte, une menace de résiliation, une demande de
-  changement vers le plan Enterprise (nécessite un commercial), ou un
-  problème dont la résolution nécessite clairement une action humaine
-  (ex: erreur de facturation à corriger manuellement)
-- false pour toute question standard, même urgente ou frustrée, dès lors
-  qu'une réponse factuelle peut raisonnablement exister dans une
-  documentation produit
+Règles pour "necessite_escalade_directe" (uniquement ces cas précis) :
+- true si c'est une plainte explicite, une menace de résiliation, ou une
+  demande de passage au plan Enterprise (nécessite un commercial)
+- false dans TOUS les autres cas, y compris les demandes de remboursement
+  standard -- même si tu ne sais pas si la demande sera acceptée, la
+  politique de remboursement est documentée et doit être vérifiée par
+  recherche documentaire plutôt que d'être présupposée comme nécessitant
+  un humain
+- Ne présume jamais qu'une demande nécessite une action humaine simplement
+  parce qu'elle implique de l'argent : laisse la vérification factuelle
+  se faire via la documentation
 
 Règles pour "urgence" :
 - "haute" si le client exprime une forte frustration, un blocage total,

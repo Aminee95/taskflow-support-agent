@@ -1,9 +1,9 @@
 {
   "metriques": {
     "total_tickets": 20,
-    "precision_categorisation": 95.0,
-    "precision_escalade": 85.0,
-    "taux_reponse_du_premier_coup": 75.0
+    "precision_categorisation": 90.0,
+    "precision_escalade": 90.0,
+    "taux_reponse_du_premier_coup": 70.0
   },
   "details": [
     {
@@ -20,8 +20,8 @@
     {
       "id": "T002",
       "categorie_attendue": "facturation",
-      "categorie_trouvee": "facturation",
-      "categorie_correcte": true,
+      "categorie_trouvee": "demande_fonctionnalite",
+      "categorie_correcte": false,
       "doit_escalader_attendu": true,
       "a_escalade": true,
       "escalade_correcte": true,
@@ -34,10 +34,10 @@
       "categorie_trouvee": "facturation",
       "categorie_correcte": true,
       "doit_escalader_attendu": true,
-      "a_escalade": true,
-      "escalade_correcte": true,
-      "tentatives": 0,
-      "statut_final": "escalade"
+      "a_escalade": false,
+      "escalade_correcte": false,
+      "tentatives": 1,
+      "statut_final": "repondu"
     },
     {
       "id": "T004",
@@ -45,10 +45,10 @@
       "categorie_trouvee": "facturation",
       "categorie_correcte": true,
       "doit_escalader_attendu": false,
-      "a_escalade": true,
-      "escalade_correcte": false,
-      "tentatives": 0,
-      "statut_final": "escalade"
+      "a_escalade": false,
+      "escalade_correcte": true,
+      "tentatives": 1,
+      "statut_final": "repondu"
     },
     {
       "id": "T005",
@@ -111,10 +111,10 @@
       "categorie_trouvee": "bug_technique",
       "categorie_correcte": true,
       "doit_escalader_attendu": true,
-      "a_escalade": false,
-      "escalade_correcte": false,
-      "tentatives": 1,
-      "statut_final": "repondu"
+      "a_escalade": true,
+      "escalade_correcte": true,
+      "tentatives": 2,
+      "statut_final": "escalade"
     },
     {
       "id": "T011",
