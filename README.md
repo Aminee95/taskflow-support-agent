@@ -97,19 +97,26 @@ python src/debug_tickets.py
 
 Le système est évalué sur un jeu de 20 tickets annotés (catégorie et décision d'escalade attendues), couvrant 5 types de demandes : facturation, bug technique, question produit, plainte, demande de fonctionnalité.
 
-| Itération | Précision catégorisation | Précision escalade | Réponse dès le 1er coup |
-|---|---|---|---|
-| v1 (prompt Routeur initial) | 85% | 85% | 85% |
-| v2 (clarification facturation + découplage urgence/escalade) | 95% | 85% | 75% |
+| Itération | Changement apporté | Précision catégorisation | Précision escalade | Réponse dès le 1er coup |
+|---|---|---|---|---|
+| v1 | Prompt Routeur initial | 85% | 85% | 85% |
+| v2 | Clarification catégorie facturation + découplage urgence/escalade | 95% | 85% | 75% |
+| v3 | Routeur ne présume plus l'escalade sur simple remboursement ; Chercheur interdit d'extrapoler une cause à effet non écrite dans le contexte ; k=3→5 | 90% | 90% | 70% |
+| v4 | Chunks élargis (500→800 caractères) pour ne plus couper les sections courtes ; correction d'une annotation de test elle-même incorrecte (T003) | 90% | **100%** | 70% |
 
-**Ce que cette itération montre** : le passage de v1 à v2 a nettement amélioré la catégorisation, mais a déplacé (sans les réduire) les erreurs d'escalade — un rappel que corriger un prompt sur un cas précis peut avoir des effets de bord ailleurs dans le système. Investigation en cours sur les tickets T004, T010 et T015 pour identifier si le problème vient du Routeur ou d'un excès de permissivité du Vérificateur.
+**Ce que ces itérations montrent** :
+- Une correction ciblée sur un cas précis peut faire reculer une autre métrique ailleurs (v1→v2 : la catégorisation progresse mais le taux de réponse du 1er coup recule) — un rappel qu'itérer sur un système multi-agents demande de mesurer l'ensemble des métriques, pas une seule isolément.
+- Un bug de "hallucination" peut en réalité être un problème de retrieval (chunking trop agressif qui coupe une info pertinente hors contexte), pas un problème de prompt — diagnostiquer la bonne couche du système est essentiel avant de corriger.
+- Une évaluation rigoureuse peut aussi révéler une erreur dans les **données de test elles-mêmes** : le ticket T003 était annoté comme nécessitant une escalade humaine, alors que la documentation prévoit un remboursement automatique pour ce cas précis. Corriger cette annotation était plus juste que de forcer le système à s'y conformer.
+
+**Erreur restante (T002, T005)** : ces deux tickets oscillent entre plusieurs catégories selon les itérations sans converger totalement, un signe que la frontière entre "facturation" et "question produit" reste ambiguë pour certaines formulations. Piste d'amélioration identifiée mais non résolue : ajouter des exemples few-shot dans le prompt du Routeur plutôt que de continuer à ajuster les règles en texte libre.
 
 ## Limites actuelles et pistes d'amélioration
 
-- Le Vérificateur peut occasionnellement valider une réponse insuffisamment fondée sur des bugs non documentés (à confirmer par le diagnostic en cours)
+- Deux tickets (T002, T005) oscillent encore entre les catégories "facturation" et "question_produit" selon les formulations
 - Pas encore de gestion du contexte multi-tours (chaque ticket est traité indépendamment)
 - Base de connaissance volontairement restreinte (documentation synthétique de ~2 pages)
 
 ## État du projet
 
-🚧 En cours de développement — Semaine 4 : itération et diagnostic des erreurs restantes.
+🚧 En cours de développement — Semaine 4 : itérations terminées (v1→v4), passage à l'interface utilisateur.
