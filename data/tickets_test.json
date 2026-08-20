@@ -17,8 +17,8 @@
     "id": "T003",
     "categorie": "facturation",
     "message": "J'ai été débité deux fois ce mois-ci, c'est anormal !",
-    "reponse_attendue_resumee": "Erreur de facturation avérée = remboursement automatique sous 5 jours ouvrés.",
-    "doit_escalader": true
+    "reponse_attendue_resumee": "Erreur de facturation avérée = remboursement automatique sous 5 jours ouvrés, pas besoin d'intervention humaine.",
+    "doit_escalader": false
   },
   {
     "id": "T004",

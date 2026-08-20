@@ -2,7 +2,7 @@
   "metriques": {
     "total_tickets": 20,
     "precision_categorisation": 90.0,
-    "precision_escalade": 90.0,
+    "precision_escalade": 100.0,
     "taux_reponse_du_premier_coup": 70.0
   },
   "details": [
@@ -33,9 +33,9 @@
       "categorie_attendue": "facturation",
       "categorie_trouvee": "facturation",
       "categorie_correcte": true,
-      "doit_escalader_attendu": true,
+      "doit_escalader_attendu": false,
       "a_escalade": false,
-      "escalade_correcte": false,
+      "escalade_correcte": true,
       "tentatives": 1,
       "statut_final": "repondu"
     },
@@ -166,10 +166,10 @@
       "categorie_trouvee": "question_produit",
       "categorie_correcte": true,
       "doit_escalader_attendu": false,
-      "a_escalade": true,
-      "escalade_correcte": false,
-      "tentatives": 2,
-      "statut_final": "escalade"
+      "a_escalade": false,
+      "escalade_correcte": true,
+      "tentatives": 1,
+      "statut_final": "repondu"
     },
     {
       "id": "T016",
@@ -179,7 +179,7 @@
       "doit_escalader_attendu": true,
       "a_escalade": true,
       "escalade_correcte": true,
-      "tentatives": 0,
+      "tentatives": 2,
       "statut_final": "escalade"
     },
     {

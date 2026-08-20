@@ -23,12 +23,7 @@ CHROMA_DIR = "chroma_db"
 
 def load_documents():
     """Charge tous les fichiers .md du dossier data/"""
-    loader = DirectoryLoader(
-    DATA_DIR, 
-    glob="*.md", 
-    loader_cls=TextLoader,
-    loader_kwargs={"encoding": "utf-8"}
-)
+    loader = DirectoryLoader(DATA_DIR, glob="*.md", loader_cls=TextLoader)
     documents = loader.load()
     print(f"{len(documents)} document(s) chargé(s).")
     return documents
@@ -43,8 +38,8 @@ def split_documents(documents):
     en plein milieu.
     """
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=80,
+        chunk_size=800,
+        chunk_overlap=120,
         separators=["\n## ", "\n### ", "\n\n", "\n", " "],
     )
     chunks = splitter.split_documents(documents)
