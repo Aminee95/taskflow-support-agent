@@ -4,13 +4,24 @@ Interface web simple (Streamlit) pour interagir avec le système
 multi-agents sans passer par le terminal. Affiche aussi le raisonnement
 de chaque agent, pour rendre le fonctionnement transparent.
 
-Pour l'exécuter : streamlit run src/app.py
+Pour l'exécuter en local : streamlit run src/app.py
 """
 
+import os
 import streamlit as st
 from graphe import construire_graphe
 
 st.set_page_config(page_title="TaskFlow Support Agent", page_icon="🤖")
+
+# Sur un déploiement en ligne (Streamlit Cloud), le dossier chroma_db/
+# n'existe pas encore puisqu'il est exclu du dépôt Git (voir .gitignore).
+# On le reconstruit automatiquement au premier démarrage si besoin.
+if not os.path.exists("chroma_db"):
+    with st.spinner("Premier démarrage : construction de la base de connaissances..."):
+        from ingest import load_documents, split_documents, build_vectorstore
+        docs = load_documents()
+        chunks = split_documents(docs)
+        build_vectorstore(chunks)
 
 st.title("🤖 TaskFlow Support Agent")
 st.caption(
@@ -19,14 +30,14 @@ st.caption(
     "si la réponse ne peut pas être garantie fiable."
 )
 
-# On ne reconstruit le graphe qu'une seule fois, pas à chaque interaction
+
 @st.cache_resource
 def get_app():
     return construire_graphe()
 
+
 app = get_app()
 
-# Quelques exemples cliquables pour tester rapidement sans taper de texte
 exemples = {
     "Facturation simple": "Je n'ai pas reçu ma facture du mois dernier, pouvez-vous me la renvoyer ?",
     "Question produit": "Comment inviter un collègue sur mon espace de travail ?",
@@ -52,7 +63,6 @@ if st.button("Traiter le ticket", type="primary"):
         with st.spinner("Les agents traitent le ticket..."):
             resultat = app.invoke({"message": message, "tentatives": 0})
 
-        # --- Résumé du traitement ---
         col1, col2, col3 = st.columns(3)
         col1.metric("Catégorie", resultat["categorie"])
         col2.metric("Urgence", resultat["urgence"])
@@ -60,7 +70,6 @@ if st.button("Traiter le ticket", type="primary"):
 
         st.divider()
 
-        # --- Résultat final ---
         if resultat["statut_final"] == "repondu":
             st.success("✅ Réponse automatique validée")
             st.write(resultat["reponse"])
@@ -72,7 +81,6 @@ if st.button("Traiter le ticket", type="primary"):
                 "risquer une réponse incorrecte."
             )
 
-        # --- Détail du raisonnement (pour la transparence, repliable) ---
         with st.expander("Voir le détail du raisonnement des agents"):
             st.json({
                 "categorie": resultat["categorie"],
