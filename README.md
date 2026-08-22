@@ -1,5 +1,7 @@
 # TaskFlow Support Agent
 
+🔗 **[Voir la démo en ligne](https://taskflow-support-agent-gpqsr4zvpadheplzbvaavx.streamlit.app/)**
+
 Système multi-agents (LangGraph) qui automatise le traitement des tickets de support client pour TaskFlow, un SaaS fictif de gestion de projet.
 
 ## Le problème
@@ -34,6 +36,7 @@ Le mécanisme central : une **boucle de correction conditionnelle**. Si le Véri
 - Python, LangChain, LangGraph
 - ChromaDB (base vectorielle, embeddings OpenAI `text-embedding-3-small`)
 - OpenAI `gpt-4o-mini` (agents)
+- Streamlit (interface, déployée sur Streamlit Community Cloud)
 
 ## Installation
 
@@ -93,6 +96,12 @@ Diagnostiquer en détail le raisonnement de chaque agent sur des tickets précis
 python src/debug_tickets.py
 ```
 
+Lancer l'interface web en local :
+
+```bash
+streamlit run src/app.py
+```
+
 ## Résultats et itérations
 
 Le système est évalué sur un jeu de 20 tickets annotés (catégorie et décision d'escalade attendues), couvrant 5 types de demandes : facturation, bug technique, question produit, plainte, demande de fonctionnalité.
@@ -116,7 +125,8 @@ Le système est évalué sur un jeu de 20 tickets annotés (catégorie et décis
 - Deux tickets (T002, T005) oscillent encore entre les catégories "facturation" et "question_produit" selon les formulations
 - Pas encore de gestion du contexte multi-tours (chaque ticket est traité indépendamment)
 - Base de connaissance volontairement restreinte (documentation synthétique de ~2 pages)
+- Sur le déploiement en ligne, la base vectorielle est reconstruite à chaque redémarrage du serveur (pas de persistance entre sessions sur l'hébergement gratuit)
 
 ## État du projet
 
-🚧 En cours de développement — Semaine 4 : itérations terminées (v1→v4), passage à l'interface utilisateur.
+✅ Projet complet — pipeline RAG, système multi-agents avec boucle de correction, évaluation chiffrée sur 4 itérations, interface déployée en ligne.
