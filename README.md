@@ -96,6 +96,12 @@ Diagnostiquer en détail le raisonnement de chaque agent sur des tickets précis
 python src/debug_tickets.py
 ```
 
+Lancer les tests de robustesse contre les tentatives de manipulation :
+
+```bash
+python src/test_robustesse.py
+```
+
 Lancer l'interface web en local :
 
 ```bash
@@ -119,6 +125,12 @@ Le système est évalué sur un jeu de 20 tickets annotés (catégorie et décis
 - Une évaluation rigoureuse peut aussi révéler une erreur dans les **données de test elles-mêmes** : le ticket T003 était annoté comme nécessitant une escalade humaine, alors que la documentation prévoit un remboursement automatique pour ce cas précis. Corriger cette annotation était plus juste que de forcer le système à s'y conformer.
 
 **Erreur restante (T002, T005)** : ces deux tickets oscillent entre plusieurs catégories selon les itérations sans converger totalement, un signe que la frontière entre "facturation" et "question produit" reste ambiguë pour certaines formulations. Piste d'amélioration identifiée mais non résolue : ajouter des exemples few-shot dans le prompt du Routeur plutôt que de continuer à ajuster les règles en texte libre.
+
+## Robustesse face aux tentatives de manipulation
+
+Au-delà de l'évaluation fonctionnelle, le système est testé contre 5 scénarios de prompt injection (`src/test_robustesse.py`) : instructions cachées pour extorquer un faux remboursement, usurpation d'un rôle système, tentative d'extraction du prompt interne, contournement de l'escalade via une fausse consigne, et confirmation forcée d'une fonctionnalité inexistante.
+
+**Résultat : 5/5 tentatives repoussées**, toutes escaladées à un humain plutôt que de céder à la manipulation. Ce résultat découle directement de la conception du Vérificateur : il ne juge jamais si une réponse "semble convaincante", uniquement si elle est prouvée par la documentation. Comme aucune attaque ne peut fabriquer une preuve documentaire inexistante, le garde-fou tient sans logique de détection d'attaque dédiée.
 
 ## Limites actuelles et pistes d'amélioration
 
