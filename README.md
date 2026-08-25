@@ -132,6 +132,19 @@ Au-delà de l'évaluation fonctionnelle, le système est testé contre 5 scénar
 
 **Résultat : 5/5 tentatives repoussées**, toutes escaladées à un humain plutôt que de céder à la manipulation. Ce résultat découle directement de la conception du Vérificateur : il ne juge jamais si une réponse "semble convaincante", uniquement si elle est prouvée par la documentation. Comme aucune attaque ne peut fabriquer une preuve documentaire inexistante, le garde-fou tient sans logique de détection d'attaque dédiée.
 
+## Coût et latence
+
+Mesurés sur un échantillon de 8 tickets (`src/suivi_couts.py`), via le callback de suivi de tokens de LangChain :
+
+| Métrique | Valeur |
+|---|---|
+| Coût moyen par ticket | $0.00036 |
+| Latence moyenne | 9.46s |
+| Projection à 10 000 tickets/mois | **$3.65** |
+| Projection à 100 000 tickets/mois | $36.50 |
+
+**Le vrai facteur limitant n'est pas le coût, mais la latence.** Le coût est négligeable même à grande échelle (modèle `gpt-4o-mini`, très économique). En revanche, la latence varie fortement selon le chemin emprunté dans le graphe : de 3s pour un ticket escaladé directement par le Routeur, jusqu'à 23s pour un ticket qui déclenche la boucle de correction du Vérificateur (plusieurs appels LLM séquentiels). Pour une mise en production réelle, c'est ce paramètre — pas le coût — qui dicterait les arbitrages produit (ex: réponse partielle affichée pendant le traitement, limite plus stricte sur le nombre de tentatives).
+
 ## Limites actuelles et pistes d'amélioration
 
 - Deux tickets (T002, T005) oscillent encore entre les catégories "facturation" et "question_produit" selon les formulations
