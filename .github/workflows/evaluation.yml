@@ -1,0 +1,37 @@
+name: Évaluation automatique du système
+
+# Se déclenche à chaque push sur main, et sur chaque pull request
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  evaluer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Construire la base de connaissances
+        run: python src/ingest.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Lancer l'évaluation complète
+        run: python src/evaluer.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Vérifier les seuils de qualité minimums
+        run: python src/verifier_seuils.py
