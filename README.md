@@ -145,6 +145,10 @@ Mesurés sur un échantillon de 8 tickets (`src/suivi_couts.py`), via le callbac
 
 **Le vrai facteur limitant n'est pas le coût, mais la latence.** Le coût est négligeable même à grande échelle (modèle `gpt-4o-mini`, très économique). En revanche, la latence varie fortement selon le chemin emprunté dans le graphe : de 3s pour un ticket escaladé directement par le Routeur, jusqu'à 23s pour un ticket qui déclenche la boucle de correction du Vérificateur (plusieurs appels LLM séquentiels). Pour une mise en production réelle, c'est ce paramètre — pas le coût — qui dicterait les arbitrages produit (ex: réponse partielle affichée pendant le traitement, limite plus stricte sur le nombre de tentatives).
 
+## Intégration continue (CI/CD)
+
+Un workflow GitHub Actions (`.github/workflows/evaluation.yml`) exécute automatiquement l'évaluation complète à chaque push sur `main` : reconstruction de la base de connaissances, exécution des 20 tickets de test, puis vérification que chaque métrique dépasse un seuil minimum défini (`src/verifier_seuils.py`). Si une modification fait chuter la fiabilité du système sous ces seuils, le pipeline échoue visiblement sur GitHub — la régression est détectée avant même d'être fusionnée, pas découverte après coup.
+
 ## Limites actuelles et pistes d'amélioration
 
 - Deux tickets (T002, T005) oscillent encore entre les catégories "facturation" et "question_produit" selon les formulations
