@@ -1,5 +1,7 @@
 # TaskFlow Support Agent
 
+[![Évaluation automatique](https://github.com/Aminee95/taskflow-support-agent/actions/workflows/evaluation.yml/badge.svg)](https://github.com/Aminee95/taskflow-support-agent/actions/workflows/evaluation.yml)
+
 🔗 **[Voir la démo en ligne](https://taskflow-support-agent-gpqsr4zvpadheplzbvaavx.streamlit.app/)**
 
 Système multi-agents (LangGraph) qui automatise le traitement des tickets de support client pour TaskFlow, un SaaS fictif de gestion de projet.
