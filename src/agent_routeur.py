@@ -22,24 +22,42 @@ CATEGORIES = [
     "demande_fonctionnalite",
 ]
 
-# On demande une sortie strictement en JSON pour pouvoir l'utiliser
-# facilement dans le code ensuite (au lieu de devoir "parser" du texte libre).
-#
-# Version 2 du prompt (itération après évaluation v1 à 85%) :
-# - Précision ajoutée sur "facturation" pour inclure les changements de plan
-# - "urgence" et "necessite_escalade_directe" sont maintenant clairement
-#   DÉCOUPLÉS : un ticket peut être urgent ET avoir une réponse simple dans
-#   la doc (ex: "l'appli est trop lente" -> urgence haute mais pas d'escalade,
-#   car la doc a la solution).
+# Version 5 du prompt : ajout de few-shot prompting pour corriger les cas
+# limites persistants (T002, T005) qui résistaient depuis 4 itérations de
+# règles en texte libre. Le principe : donner des exemples concrets plutôt
+# que des règles abstraites, pour que le modèle raisonne par analogie sur
+# le cas le plus proche.
 PROMPT_TEMPLATE = """Tu es un agent qui catégorise les tickets de support client pour TaskFlow.
 
 Catégories possibles : {categories}
 
 Précisions sur les catégories :
 - "facturation" couvre : les questions sur les plans/abonnements, les changements
-  de plan (upgrade/downgrade), les remboursements, les factures, les paiements.
+  de plan (upgrade/downgrade), les remboursements, les factures, les paiements,
+  ET les questions d'accès/permissions liées aux paramètres de facturation.
 - "question_produit" couvre uniquement : comment utiliser une fonctionnalité
-  existante de l'outil (pas les plans ou la facturation).
+  existante de l'outil, hors plans et hors facturation.
+
+Voici des exemples de tickets déjà correctement catégorisés, pour t'aider sur
+les cas ambigus :
+
+Exemple 1 :
+Ticket : "Comment inviter un nouveau membre sur mon espace de travail ?"
+Catégorie : question_produit (usage d'une fonctionnalité, aucun lien avec la facturation)
+
+Exemple 2 :
+Ticket : "Je suis Admin sur notre espace, pourquoi je ne vois pas les paramètres de facturation ?"
+Catégorie : facturation (même si la question porte sur un rôle/permission, le
+sujet concret est l'accès aux paramètres de FACTURATION -- pas l'usage général du produit)
+
+Exemple 3 :
+Ticket : "Je voudrais passer du plan Pro au plan Enterprise, comment faire ?"
+Catégorie : facturation, necessite_escalade_directe=true (changement de plan vers
+Enterprise, nécessite un commercial)
+
+Exemple 4 :
+Ticket : "Comment personnaliser les colonnes de mon tableau Kanban ?"
+Catégorie : question_produit (usage d'une fonctionnalité, aucun lien avec la facturation)
 
 Analyse le ticket suivant et réponds UNIQUEMENT avec un objet JSON valide,
 sans aucun texte avant ou après, au format exact suivant :
@@ -88,12 +106,9 @@ def router_ticket(texte_ticket):
         "ticket": texte_ticket,
     })
 
-    # Le LLM renvoie du texte -- on le transforme en objet Python (dict)
     try:
         donnees = json.loads(resultat.content)
     except json.JSONDecodeError:
-        # Filet de sécurité : si jamais le LLM ne renvoie pas un JSON propre,
-        # on ne plante pas le programme, on renvoie une erreur explicite.
         donnees = {
             "categorie": "inconnue",
             "urgence": "haute",
@@ -105,12 +120,14 @@ def router_ticket(texte_ticket):
 
 
 if __name__ == "__main__":
-    # On teste sur quelques tickets de notre jeu de données
     with open("data/tickets_test.json", "r", encoding="utf-8") as f:
         tickets = json.load(f)
 
-    # On teste sur les 6 premiers pour l'instant
-    for ticket in tickets[:6]:
+    # On teste spécifiquement sur les tickets qui posaient problème
+    ids_cibles = ["T002", "T005", "T011", "T014"]
+    tickets_cibles = [t for t in tickets if t["id"] in ids_cibles]
+
+    for ticket in tickets_cibles:
         resultat = router_ticket(ticket["message"])
         print(f"\n{'='*60}")
         print(f"TICKET ({ticket['id']}) : {ticket['message']}")

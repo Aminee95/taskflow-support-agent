@@ -39,6 +39,8 @@ Le mécanisme central : une **boucle de correction conditionnelle**. Si le Véri
 - ChromaDB (base vectorielle, embeddings OpenAI `text-embedding-3-small`)
 - OpenAI `gpt-4o-mini` (agents)
 - Streamlit (interface, déployée sur Streamlit Community Cloud)
+- LangSmith (observabilité)
+- GitHub Actions (CI/CD)
 
 ## Installation
 
@@ -70,7 +72,7 @@ Configurer les variables d'environnement :
 cp .env.example .env
 ```
 
-Puis renseigner votre clé API OpenAI dans le fichier `.env`.
+Puis renseigner votre clé API OpenAI (et optionnellement LangSmith) dans le fichier `.env`.
 
 ## Utilisation
 
@@ -104,6 +106,12 @@ Lancer les tests de robustesse contre les tentatives de manipulation :
 python src/test_robustesse.py
 ```
 
+Mesurer le coût et la latence réels :
+
+```bash
+python src/suivi_couts.py
+```
+
 Lancer l'interface web en local :
 
 ```bash
@@ -119,14 +127,14 @@ Le système est évalué sur un jeu de 20 tickets annotés (catégorie et décis
 | v1 | Prompt Routeur initial | 85% | 85% | 85% |
 | v2 | Clarification catégorie facturation + découplage urgence/escalade | 95% | 85% | 75% |
 | v3 | Routeur ne présume plus l'escalade sur simple remboursement ; Chercheur interdit d'extrapoler une cause à effet non écrite dans le contexte ; k=3→5 | 90% | 90% | 70% |
-| v4 | Chunks élargis (500→800 caractères) pour ne plus couper les sections courtes ; correction d'une annotation de test elle-même incorrecte (T003) | 90% | **100%** | 70% |
+| v4 | Chunks élargis (500→800 caractères) ; correction d'une annotation de test elle-même incorrecte (T003) | 90% | 100% | 70% |
+| v5 | Few-shot prompting sur l'Agent Routeur pour lever l'ambiguïté persistante entre "facturation" et "question_produit" | **100%** | **100%** | 75% |
 
 **Ce que ces itérations montrent** :
-- Une correction ciblée sur un cas précis peut faire reculer une autre métrique ailleurs (v1→v2 : la catégorisation progresse mais le taux de réponse du 1er coup recule) — un rappel qu'itérer sur un système multi-agents demande de mesurer l'ensemble des métriques, pas une seule isolément.
-- Un bug de "hallucination" peut en réalité être un problème de retrieval (chunking trop agressif qui coupe une info pertinente hors contexte), pas un problème de prompt — diagnostiquer la bonne couche du système est essentiel avant de corriger.
-- Une évaluation rigoureuse peut aussi révéler une erreur dans les **données de test elles-mêmes** : le ticket T003 était annoté comme nécessitant une escalade humaine, alors que la documentation prévoit un remboursement automatique pour ce cas précis. Corriger cette annotation était plus juste que de forcer le système à s'y conformer.
-
-**Erreur restante (T002, T005)** : ces deux tickets oscillent entre plusieurs catégories selon les itérations sans converger totalement, un signe que la frontière entre "facturation" et "question produit" reste ambiguë pour certaines formulations. Piste d'amélioration identifiée mais non résolue : ajouter des exemples few-shot dans le prompt du Routeur plutôt que de continuer à ajuster les règles en texte libre.
+- Une correction ciblée sur un cas précis peut faire reculer une autre métrique ailleurs (v1→v2) — un rappel qu'itérer sur un système multi-agents demande de mesurer l'ensemble des métriques, pas une seule isolément.
+- Un bug de "hallucination" peut en réalité être un problème de retrieval (chunking trop agressif), pas un problème de prompt — diagnostiquer la bonne couche du système est essentiel avant de corriger.
+- Une évaluation rigoureuse peut révéler une erreur dans les **données de test elles-mêmes** : le ticket T003 était annoté comme nécessitant une escalade humaine, alors que la documentation prévoit un remboursement automatique pour ce cas précis.
+- Quand des règles en texte libre échouent de façon répétée sur un cas limite (T002/T005, 4 itérations sans succès), **changer de technique** plutôt que de continuer à ajuster les règles peut être plus efficace : le passage au few-shot prompting (donner des exemples concrets plutôt que des règles abstraites) a résolu le problème en une seule itération.
 
 ## Robustesse face aux tentatives de manipulation
 
@@ -145,19 +153,20 @@ Mesurés sur un échantillon de 8 tickets (`src/suivi_couts.py`), via le callbac
 | Projection à 10 000 tickets/mois | **$3.65** |
 | Projection à 100 000 tickets/mois | $36.50 |
 
-**Le vrai facteur limitant n'est pas le coût, mais la latence.** Le coût est négligeable même à grande échelle (modèle `gpt-4o-mini`, très économique). En revanche, la latence varie fortement selon le chemin emprunté dans le graphe : de 3s pour un ticket escaladé directement par le Routeur, jusqu'à 23s pour un ticket qui déclenche la boucle de correction du Vérificateur (plusieurs appels LLM séquentiels). Pour une mise en production réelle, c'est ce paramètre — pas le coût — qui dicterait les arbitrages produit (ex: réponse partielle affichée pendant le traitement, limite plus stricte sur le nombre de tentatives).
+**Le vrai facteur limitant n'est pas le coût, mais la latence.** Le coût est négligeable même à grande échelle. En revanche, la latence varie fortement selon le chemin emprunté dans le graphe : de 3s pour un ticket escaladé directement, jusqu'à 23s pour un ticket qui déclenche la boucle de correction. Pour une mise en production réelle, c'est ce paramètre qui dicterait les arbitrages produit.
 
 ## Intégration continue (CI/CD)
 
-Un workflow GitHub Actions (`.github/workflows/evaluation.yml`) exécute automatiquement l'évaluation complète à chaque push sur `main` : reconstruction de la base de connaissances, exécution des 20 tickets de test, puis vérification que chaque métrique dépasse un seuil minimum défini (`src/verifier_seuils.py`). Si une modification fait chuter la fiabilité du système sous ces seuils, le pipeline échoue visiblement sur GitHub — la régression est détectée avant même d'être fusionnée, pas découverte après coup.
+Un workflow GitHub Actions (`.github/workflows/evaluation.yml`) exécute automatiquement l'évaluation complète à chaque push sur `main` : reconstruction de la base de connaissances, exécution des 20 tickets de test, puis vérification que chaque métrique dépasse un seuil minimum défini (`src/verifier_seuils.py`). Si une modification fait chuter la fiabilité du système sous ces seuils, le pipeline échoue visiblement sur GitHub.
 
 ## Limites actuelles et pistes d'amélioration
 
-- Deux tickets (T002, T005) oscillent encore entre les catégories "facturation" et "question_produit" selon les formulations
+- Jeu de test volontairement restreint (20 tickets) — un jeu plus large (40-50 tickets) rendrait les métriques statistiquement plus robustes
 - Pas encore de gestion du contexte multi-tours (chaque ticket est traité indépendamment)
 - Base de connaissance volontairement restreinte (documentation synthétique de ~2 pages)
 - Sur le déploiement en ligne, la base vectorielle est reconstruite à chaque redémarrage du serveur (pas de persistance entre sessions sur l'hébergement gratuit)
+- Retrieval purement vectoriel (pas de recherche hybride mots-clés + sémantique, ni de reranking)
 
 ## État du projet
 
-✅ Projet complet — pipeline RAG, système multi-agents avec boucle de correction, évaluation chiffrée sur 4 itérations, interface déployée en ligne.
+✅ Projet complet — pipeline RAG, système multi-agents avec boucle de correction, évaluation chiffrée sur 5 itérations (100% de précision), tests de robustesse, suivi coût/latence, CI/CD, interface déployée en ligne.
